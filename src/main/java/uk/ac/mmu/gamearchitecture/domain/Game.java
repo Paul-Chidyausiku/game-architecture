@@ -102,6 +102,9 @@ public class Game {
     public int getTotalTurns() {
         return players.stream().mapToInt(Player::getTurnsTaken).sum();
     }
+    public List<Integer> getDiceHistory() {
+        return List.copyOf(diceHistory);
+    }
     public void setState(GameState newState) {
         System.out.println("Game State " + this.state.getName() + " → " + newState.getName());
         this.state = newState;
@@ -230,11 +233,8 @@ public class Game {
         while (!(state instanceof GameOverState)) {
             state.handle(this);
         }
-        GameRecord record = new GameRecord(diceHistory);
-        int gameId = GameManager.save(record);
 
         System.out.println("Dice rolls: " + diceHistory);
-        System.out.println("Game id: " + gameId + " saved.");
 
         // printing readable text
         System.out.println("\nTurn Summary");
