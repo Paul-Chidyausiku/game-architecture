@@ -99,12 +99,24 @@ public class Game {
     }
 
 
+
+
     public int getTotalTurns() {
         return players.stream().mapToInt(Player::getTurnsTaken).sum();
     }
+
     public List<Integer> getDiceHistory() {
         return List.copyOf(diceHistory);
     }
+
+    public int getBoardSize() {
+        return board.getSize();
+    }
+
+    public int getNumberOfPlayers() {
+        return players.size();
+    }
+
     public void setState(GameState newState) {
         System.out.println("Game State " + this.state.getName() + " → " + newState.getName());
         this.state = newState;

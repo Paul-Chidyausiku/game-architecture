@@ -2,37 +2,45 @@ package uk.ac.mmu.gamearchitecture.infrastructure.driving;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import uk.ac.mmu.gamearchitecture.domain.*;
-import uk.ac.mmu.gamearchitecture.usecase.playgame.Provided;
+import uk.ac.mmu.gamearchitecture.domain.GameType;
 
 @Component
 public class GameCliAdapter implements CommandLineRunner {
 
-    private final Provided playGame;
+    private final uk.ac.mmu.gamearchitecture.usecase.playgame.Provided playGame;
+    private final uk.ac.mmu.gamearchitecture.usecase.replaygame.Provided replayGame;
 
-    public GameCliAdapter(Provided playGame) {
+
+    public GameCliAdapter(
+            uk.ac.mmu.gamearchitecture.usecase.playgame.Provided playGame,
+            uk.ac.mmu.gamearchitecture.usecase.replaygame.Provided replayGame
+    ) {
         this.playGame = playGame;
+        this.replayGame = replayGame;
     }
+
 
     @Override
     public void run(String... args) {
-        new Game(new NormalGameFactory()).start();
+        int normalId = playGame.play(GameType.NORMAL);
+        replayGame.replay(normalId);
 
-        System.out.println("\n=== Bounce Game ===");
-        new Game(new BounceGameFactory()).start();
+        int bounceId = playGame.play(GameType.BOUNCE);
+        replayGame.replay(bounceId);
 
-        System.out.println("\n=== Hit Game ===");
-        new Game(new HitGameFactory()).start();
+        int hitId = playGame.play(GameType.HIT);
+        replayGame.replay(hitId);
 
-        System.out.println("\n=== Wormhole Game ===");
-        new Game(new WormholeGameFactory()).start();
+        int wormholeId = playGame.play(GameType.WORMHOLE);
+        replayGame.replay(wormholeId);
 
-        System.out.println("\n=== Large Board Game ===");
-        new Game(new LargeGameFactory()).start();
+        int largeId = playGame.play(GameType.LARGE);
+        replayGame.replay(largeId);
 
-        System.out.println("\n=== Combined Game ===");
-        new Game(new CombinedGameFactory()).start();
+        int combinedId = playGame.play(GameType.COMBINED);
+        replayGame.replay(combinedId);
     }
+
 
 
 }
