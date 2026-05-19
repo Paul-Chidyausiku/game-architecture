@@ -28,7 +28,7 @@ public class Usecase implements Provided{
         );
         int id = required.save (record);
 
-        System.out.println("Game id: " + id + "saved ");
+        System.out.println("Game id: " + id + " saved ");
         return id;
 
     }

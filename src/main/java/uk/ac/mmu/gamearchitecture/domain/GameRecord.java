@@ -40,4 +40,13 @@ public class GameRecord {
         return List.copyOf(diceRolls);
     }
 
+    @Override
+    public String toString() {
+
+        return "GameRecord {" + "gameType= " + gameType +
+                ", boardSize= " + boardSize + ", numberOfPlayers= "
+                 + numberOfPlayers + ", diceRolls= " + diceRolls +
+                '}';
+    }
+
 }
