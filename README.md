@@ -80,3 +80,61 @@ stateDiagram-v2
     
     GameOverState [*]
 ```
+### Observer Pattern 
+The observer Pattern is implemented through the event and the observer system used by the 'TurnHandler', Game events such as
+dice rolls, player movement and turn updates are communicated to observers which includes the 'ConsoleObserver'. 
+This improves the separation of responsibilities because output handling is separated from the game play logic. The observer 
+system also improves the scalability because additional observers could later be added without modifying the turn handling system itself. 
+
+### Adapter pattern 
+The adapter pattern is used within the infrastructure layer of the architecture through classes such as the 'GameDatabaseAdapter' class. 
+The Adapter converts the 'InMemoryDatabase' implementation into the interfaces required by the play and replay use cases. This allows 
+the use cases to depend on abstractions instead of concrete storage implementations supporting the Dependency Inversion Principle and 
+improves maintainability throughout the system. 
+
+## SOLID Principles 
+Several SOLID Principles were applied throughout the implementation to improve maintainability and reduce coupling between components. 
+### Single Responsibility Principle (SRP)
+Classes where designed with focused responsibilities rather than the functionality being combined into a single class. 
+Examples: 
+- 'GameCliAdapter' which handles console interaction. 
+- 'GameDatabaseAdapter' handle storage responsibilities. 
+- 'GameRecord' stores the replay data. 
+- 'GameFactory' implementations creating game configurations. 
+- 'Turn handler' manages turn executions. 
+
+Separating responsibilities in this way improves the maintainability if the system because changes to one area of the system 
+is less likely to affect unrelated parts of the application. 
+
+### Open Closed Principle (OCP)
+The architecture is open for extension but closed for modification. New Game play Variations can be added by creating additional 
+rules and factory implementations without modifying the core 'Game' class. 
+
+Example: 
+- 'BounceRule'
+- 'HitRule'
+- 'Wormhole' 
+- additional 'GameFactory' implementations 
+
+It improves the system because new gameplay behavior can be introduced with minimal impact on existing code. 
+
+### Dependency Inversion Principle (DIP)
+As we know the use cases depend on abstractions instead of  concrete infrastructure implementations. Interfaces like: 
+- 'GameFactoryProvider'
+- 'playgame.Required' 
+- 'replaygame.Required'
+
+This allows infrastructure implementations to be injected through SpringBoot dependency injection. 
+It reduces further mixing of the application layer and infrastructure layer while improving testability. 
+
+### Interface Segregation Principle (ISP)
+- The Play use case has separate 'Provided' and 'Required' interfaces. 
+- The Replay use case also has separate 'Provided' and 'Required' interfaces. 
+
+This keeps dependencies smaller and ensures classes only depend on operations they actually require. 
+
+## Clean Architecture, Ports and Adapters
+The project was refactored to 
+
+
+
