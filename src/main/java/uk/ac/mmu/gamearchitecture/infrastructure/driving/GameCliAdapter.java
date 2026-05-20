@@ -22,25 +22,30 @@ public class GameCliAdapter implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        int normalId = playGame.play(GameType.NORMAL);
-        replayGame.replay(normalId);
-
-        int bounceId = playGame.play(GameType.BOUNCE);
-        replayGame.replay(bounceId);
-
-        int hitId = playGame.play(GameType.HIT);
-        replayGame.replay(hitId);
-
-        int wormholeId = playGame.play(GameType.WORMHOLE);
-        replayGame.replay(wormholeId);
-
-        int largeId = playGame.play(GameType.LARGE);
-        replayGame.replay(largeId);
-
-        int combinedId = playGame.play(GameType.COMBINED);
-        replayGame.replay(combinedId);
+        runAndReplay(GameType.NORMAL, "Normal Game");
+        runAndReplay(GameType.BOUNCE, "Bounce Game");
+        runAndReplay(GameType.HIT, "Hit Game");
+        runAndReplay(GameType.WORMHOLE, "Wormhole Game");
+        runAndReplay(GameType.LARGE, "Large Board Game");
+        runAndReplay(GameType.COMBINED, "Combined Game");
     }
 
+    private void runAndReplay(GameType gameType, String title) {
+        System.out.println();
+        System.out.println("==================================================");
+        System.out.println("PLAYING: " + title);
+        System.out.println("==================================================");
 
+        int id = playGame.play(gameType);
+
+        System.out.println();
+        System.out.println("--------------------------------------------------");
+        System.out.println("REPLAYING: " + title + " | Game ID: " + id);
+        System.out.println("--------------------------------------------------");
+
+        replayGame.replay(id);
+
+        System.out.println();
+    }
 
 }

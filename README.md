@@ -134,7 +134,88 @@ It reduces further mixing of the application layer and infrastructure layer whil
 This keeps dependencies smaller and ensures classes only depend on operations they actually require. 
 
 ## Clean Architecture, Ports and Adapters
-The project was refactored to 
+The project was refactored to follow a clean architecture style with ports and adapters. The main goal 
+was to keep the application use cases separate from infrastructure details such as input/output, SpringBoot configuration 
+and in-memory storage. 
 
+The application is split into separate layers: 
+- 'domain' contains the core game logic such as 'Game', 'Player', 'Board', rules states strategies and factories. 
+- 'use case' contains application actions such as playing and replaying a game.
+- 'infrastructure.driving' contains the entry point adapter, 'GameCliAdapter'. 
+- 'Infrastructure.driven' contains adapter implementations such as 'GameDatabaseAdapter', 'InMemoryDatabase' and
+SpringGameFactory. 
 
+The use case expose 'Provided' interfaces and depend on 'Required' interfaces. This means the application logic does not
+directly depend on the storage implementation. Instead, the concrete adapter is supplied by SpringBoot in 'AppConfig'. 
+
+```mermaid
+flowchart TB
+
+    subgraph Driving["Driving Infrastructure"]
+        CLI["GameCliAdapter"]
+    end 
+    
+    subgraph Usecase["Use case Layer"]
+        PlayProvided["<<interface>>" playgame.Provided"]
+        ReplayProvided["<<interface>> replaygame.Provided"] 
+        
+        PlayUsecase["PlayGame Usecase"]  
+        ReplayUsecase["ReplayGame Usecase"] 
+        
+        PlayRequired["<<interface>> playgame.Required"] 
+        ReplayRequired["<<interface>> replaygame.Required"] 
+        FactoryProvider["<<interface>> GameFactoryProvider"] 
+    end
+    
+    subgraph Domain["Domain Layer"] 
+        Game["Game"] 
+        GameFactory["GameFactory"] 
+        GameType["GameType"] 
+    end 
+    
+    subgraph Driven["Driven Infrastructure"]
+        DatabaseAdapter["GameDatabaseAdapter"] 
+        InMemoryDatabase["InMemeryDatabase"] 
+        SpringFactoryProvider["SpringGameFactoryProvider"] 
+    end 
+    
+    CLI --> PlayProvided
+    CLI --> ReplayProvided    
+    
+    PlayProvided --> PlayUsecase
+    ReplayProvided --> ReplayUsecase 
+    
+    PlayUsecase --> Game
+    PlayUsecase --> GameRecord
+    PlayUsecase --> playRequired
+    PlayUsecase --> FactoryProvider
+    
+    ReplayUsecase --> Game
+    ReplayUsecase --> ReplayRequired
+    ReplayUsecase --> FactoryProvider
+    
+    Game --> GameFactory
+    GameRecord --> GameType
+    
+    DatabaseAdapter -.implements.-> PlayRequired
+    DatabaseAdapter -.implements.->ReplayRequired
+    DatabaseAdapter --> InMemoryDatabase
+    
+    SpringFactoryProvider -.implements.-> FactoryProvider
+    SpringFactoryProvider --> GameFactory         
+```
+This design follows the dependency inversion principle 
+because the use cases depend on interfaces rather than concrete infrastructure classes. 
+For example 'playgame.Usecase' depends on 'playgame.Required' while 'GameDatabaseAdapter' provides the concrete implementation 
+using 'InMemoryDatabase'. 
+SpringBoot acts as the dependency injection container and assembles the application in 'AppConfig'. This allows volatile
+dependencies such as the concrete 'GameFactory' implementation and storage adapter to be changed through configuration
+rather than modifying the use case or domain logic. 
+
+## Evaluation 
+Overall, I believe the final implementation is significantly more maintainable than the original version of the project. 
+Refactoring software into a clean architecture structure improved separation between domain logic, use cases and infrastructure 
+responsibilities. The use of ports and adapters reduced coupling and allowed features like save and replay to be implemented 
+without direct depending on infrastructure classes inside the application logic. One of the strongest parts of the implementation 
+is the flexibility of the game variations. 
 
