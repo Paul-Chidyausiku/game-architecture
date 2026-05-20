@@ -37,5 +37,46 @@ Replay functionality reconstructs the correct game variations using the stored '
 is then replayed through the existing game logic using 'playTurnWithFixedRoll()', This allows completed games to be replayed without generating new random dice values. 
 the use of an In-memory adapter also makes the architecture extensible because the storage implementation could later be replaced with alternative mechanisms such as JSON or file-based storage without modifying the core usecase logic.
 
+## Design Patterns 
 
+### Factory Pattern 
 
+The Factory Pattern is implemented through the 'GameFactory' abstraction and concrete factory implementations  such as 'NormalGameFactory', 'BounceGamefactoy', 'HitGameFactory', 'WormholeGameFactory' and 'CombinedGameFactory'. 
+Each factory is responsible for creating a different game configuration which includes: 
+- Board size 
+- Players 
+- Game play rules 
+- Dice Behavior 
+- Win strategies 
+
+This removes configuration logic from the main 'Game' class and allows new gameplay variations to be introduced without modifying the core game logic. Factories are selected at runtime using the 'GameType', enumeration together 
+with the 'GameFactoryProvider'.
+### Strategy Pattern 
+Strategy patterns are used to support variation in gameplay behavior at runtime. Behavior is enclosed behind interfaces allowing different implementations to be swapped without modifying dependant classes. 
+Examples include: 
+- WinStrategy 
+- PlayerSelector
+
+Different strategies can be injected into the game through the factory system, which improved the flexibility of the system. 
+
+### State Pattern
+The State Pattern is used to manage gameplay through the 'GameState' abstraction and other concrete states including: 
+- 'ReadyState'
+- 'PlayingState'
+- 'GameOverState'
+
+The current state controls how the game behaves during execution and allows behavior to change dynamically as the game progresses. 
+### State Machine Diagram 
+
+```mermaid
+stateDiagram-v2
+    [*] --> ReadyState
+    
+    ReadyState --> PlayingState : Game starts
+    
+    PlayingState --> PlayingState : player takes turn
+    
+    PlayingState --> GameOverState : Winner found 
+    
+    GameOverState [*]
+```

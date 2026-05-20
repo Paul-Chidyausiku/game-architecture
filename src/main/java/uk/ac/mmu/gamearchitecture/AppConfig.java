@@ -45,7 +45,6 @@ public class AppConfig {
         return new uk.ac.mmu.gamearchitecture.usecase.playgame.Usecase(factoryProvider, adapter);
     }
 
-
     @Bean
     uk.ac.mmu.gamearchitecture.usecase.replaygame.Provided createReplayGame(
             GameFactoryProvider factoryProvider,
